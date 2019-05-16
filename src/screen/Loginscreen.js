@@ -21,14 +21,26 @@ class Login extends Component {
     }
   }
 
+  componentDidMount(){
+    Fire.auth().onAuthStateChanged((user) => {
+      if(user){
+        this.props.onLoginSuccess(user.email,user.uid)
+      }else{
+        this.setState({loading : false})
+      }
+    })
+  }
+
   onBtnLogin = () => {
     if(this.inputEmail && this.inputPass){
+      this.setState({loading : true})
       const auth = Fire.auth()
       auth.signInWithEmailAndPassword(this.inputEmail, this.inputPass)
       .then((val) => {
         var {uid, email} = val.user
         console.log(uid)
         this.props.onLoginSuccess(email, uid)
+       
       })
       .catch((err) => {
         this.setState({error : err.message, loading : false})
@@ -39,6 +51,14 @@ class Login extends Component {
   
   }
   render() {
+    if(this.state.loading){
+      return(
+        <View style={{flex : 1 , justifyContent : 'center', alignContent : 'center'}}>
+          <ActivityIndicator size='large' color='black' />
+        </View>
+      )
+    }
+    console.disableYellowBox = true
     return (
       <Container>
         <Header>

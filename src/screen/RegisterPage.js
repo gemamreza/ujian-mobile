@@ -45,6 +45,7 @@ class Register extends Component {
   }
 
   render() {
+    console.disableYellowBox = true
     const confirm = this.state.confirm == "" ?
     <Item floatingLabel last>
       <Label>Confirm Password</Label>

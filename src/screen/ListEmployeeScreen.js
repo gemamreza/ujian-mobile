@@ -17,42 +17,49 @@ class ListEmployee extends Component {
   state = {data : []}
 
   componentDidMount(){
-    Fire.database().ref('manager/' + this.props.user.id + '/employee').on('value', items => {
+    Fire.database().ref('manager/users/' + this.props.user.id + '/employee').on('value', items => {
       this.setState({data : items.val()})
     })
   }
 
-  onBtnDeleteClick = (bebas) => {
+  // onBtnDeleteClick = (bebas) => {
 
-    Alert.alert('Delete Data','Are You Sure You Want To Delete ' + this.state.data[bebas].nama ,
-        [
-            {text : 'Yes',onPress : () => Fire.database().ref('manager/' + this.props.user.id + '/employee/' + bebas).remove() },
-            {text : 'Cancel'}
-        ])
-  }
+  //   Alert.alert('Delete Data','Are You Sure You Want To Delete ' + this.state.data[bebas].nama ,
+  //       [
+  //           {text : 'Yes',onPress : () => Fire.database().ref('manager/users/' + this.props.user.id + '/employee/' + bebas).remove() },
+  //           {text : 'Cancel'}
+  //       ])
+  // }
+
+
   render() {
+    console.disableYellowBox = true
     return (
       <Container>
         <Header />
         <Content>
           <List>
-            { Object.keys(this.state.data).map(val => {
+            { 
+              this.state.data 
+            ?
+               Object.keys(this.state.data).map(val => {
                 // val hanya mendapatkan id
                 return(
                     <ListItem onPress={() => this.props.navigation.navigate('detail', {
                       nama : this.state.data[val].nama,
                       shift : this.state.data[val].shift,
-                      phone : this.state.data[val].phone
+                      phone : this.state.data[val].phone,
+                      id : val
                     })}>
                     <Left>
                         <Text>{this.state.data[val].nama}</Text>
                     </Left>
 
-                      <Right>
+                      {/* <Right>
                       <TouchableHighlight onPress={() => this.onBtnDeleteClick(val)}>
                           <Text style={{color:'black'}} >Delete</Text>
                       </TouchableHighlight>
-                      </Right>
+                      </Right> */}
                       
                     <Right>
                         <Icon name='chevron-right' size={24} />
@@ -60,6 +67,8 @@ class ListEmployee extends Component {
                 </ListItem>
                 )
             })
+            :
+            <Text>Data Kosong</Text>
         }
           </List>
         </Content>

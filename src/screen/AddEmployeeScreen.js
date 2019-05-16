@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 class AddEmployee extends Component {
 
-    state = {selected : '', data : [], textNama : '', textPhone : ''}
+    state = {selected : 'Monday', data : [], textNama : '', textPhone : ''}
     componentDidMount(){
       Fire.database().ref('manager').on('value', items => {
         this.setState({data : items.val()})
@@ -14,24 +14,29 @@ class AddEmployee extends Component {
 
     addBtn = () => {
       var db = Fire.database()
-      var employee = db.ref('manager/' + this.props.user.id + '/employee')
+      var employee = db.ref('manager/users/' + this.props.user.id + '/employee')
 
-      employee.push({
-        nama : this.state.textNama,
-        phone : this.state.textPhone,
-        shift : this.state.selected
-      })
-      .then((res) => {
-        this.setState({textNama : '', textPhone : ''})
-        alert('Input Data Berhasil')
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+      if(this.state.textNama !== '' && this.state.textPhone !== ''){
+        employee.push({
+          nama : this.state.textNama,
+          phone : this.state.textPhone,
+          shift : this.state.selected
+        })
+        .then((res) => {
+          this.setState({textNama : '', textPhone : ''})
+          alert('Input Data Berhasil')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      } else {
+        alert('Tidak Boleh Ada Form Yang Kosong!')
+      }
+     
     }
 
   render() {
-      
+    console.disableYellowBox = true
     return (
       <Container>
         <Header>
@@ -99,3 +104,73 @@ const mapStateToProps = (state) => {
 }
 
 export default connect (mapStateToProps)(AddEmployee)
+
+// import React, { Component } from 'react';
+// import {Text ,Container, Header, Content, Form, Item, Input, Label,Button ,Picker,Left,Right } from 'native-base';
+// import { Fire } from './../support/firebase'
+// import {connect} from 'react-redux'
+// class AddEmployee extends Component {
+//     state = {selected : 'Monday'}
+//     onBtnAddClick = () => {
+//       var nama = this.inputNama
+//       var phone = this.inputPhone
+//       var shift = this.state.selected
+//       var id = this.props.id
+//       Fire.database().ref('manager/users/' + id+'/employee').push({
+//         nama,phone,shift
+//       })
+//       .then((val) => {
+//         alert('Data Masuk')
+//       })
+//       .catch((err) => console.log(err))
+//     }
+//   render() {
+//     return (
+//       <Container>
+//         <Header />
+//         <Content>
+//           <Form>
+//             <Item floatingLabel>
+//               <Label>Nama</Label>
+//               <Input onChangeText={(text) => this.inputNama = text} />
+//             </Item>
+//             <Item floatingLabel last>
+//               <Label>Phone</Label>
+//               <Input onChangeText={(text) => this.inputPhone = text} />
+//             </Item>
+//             <Item>
+//                 <Left>
+//                     <Label>Select Day</Label>
+//                 </Left>
+//                 <Right>
+//                     <Picker 
+//                         style={{ width:120}}  
+//                         mode="dropdown"
+//                         selectedValue={this.state.selected}
+//                         onValueChange={(value) => this.setState({selected : value})}>
+//                     <Picker.Item label='Monday' value='Monday' />
+//                     <Picker.Item label='Tuesday' value='Tuesday' />
+//                     <Picker.Item label='Wednesday' value='Wednesday' />
+//                     <Picker.Item label='Thursday' value='Thursday' />
+//                     <Picker.Item label='Friday' value='Friday' />
+//                     </Picker>
+//                 </Right>
+//             </Item>
+//             <Button onPress={this.onBtnAddClick} style={{marginTop : 20, marginHorizontal : 15}} block>
+//                 <Text>Add Employee</Text>
+//             </Button>
+//           </Form>
+//         </Content>
+//       </Container>
+//     );
+//   }
+// }
+
+// const mapStateToProps = (state) => {
+//   var {id} = state.auth
+//   return{
+//     id : id
+//   }
+// }
+
+// export default connect(mapStateToProps)(AddEmployee);

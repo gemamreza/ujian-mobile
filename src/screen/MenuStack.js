@@ -8,7 +8,9 @@ import {
 import {connect} from 'react-redux';
 
 class Menu extends Component {
+    
     render() {
+        console.disableYellowBox = true
         return (
             <View style={styles.container}>
                 <View>
